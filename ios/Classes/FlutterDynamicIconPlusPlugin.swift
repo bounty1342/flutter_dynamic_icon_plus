@@ -26,7 +26,10 @@ public class FlutterDynamicIconPlusPlugin: NSObject, FlutterPlugin {
             }
         case MethodNames.setAlternateIconName:
             if #available(iOS 10.3, *){
-                let args = call.arguments as! [String: Any]
+                guard let args = call.arguments as? [String: Any] else {
+                    result(FlutterError(code: "InvalidArguments", message: "Missing or invalid arguments for setAlternateIconName", details: nil))
+                    return
+                }
                 let iconName = args[Arguments.iconName] as? String
                 let isSilent = args[Arguments.isSilent]
 
@@ -47,7 +50,10 @@ public class FlutterDynamicIconPlusPlugin: NSObject, FlutterPlugin {
                 result(FlutterError(code: "Unavailable", message: "Method getApplicationIconBadgeNumber unsupported on iOS version < 10.3", details: nil))
             }
         case MethodNames.setApplicationIconBadgeNumber:
-            let args = call.arguments as! [String: Any]
+            guard let args = call.arguments as? [String: Any] else {
+                result(FlutterError(code: "InvalidArguments", message: "Missing or invalid arguments for setApplicationIconBadgeNumber", details: nil))
+                return
+            }
             if #available(iOS 10.3, *){
                 if #available(iOS 10.0, *) {
                     UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, error in
